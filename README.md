@@ -1,116 +1,85 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:2d3436,100:636e72&height=180&section=header&text=xv6-riscv&fontSize=60&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Unix%20V6%20Re-implementation%20for%20RISC-V%20Multiprocessors&descAlignY=55&descAlign=50" width="100%" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:2d3436,100:636e72&height=180&section=header&text=xv6-riscv&fontSize=60&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Unix%20V6%20%E9%87%8D%E5%AE%9E%E7%8E%B0%20%E2%80%93%20RISC-V%20%E5%A4%9A%E6%A0%B8%E7%89%88%E6%9C%AC&descAlignY=55&descAlign=50" width="100%" />
 </p>
 
-| Category | Stack |
-|----------|-------|
-| **Language** | ANSI C |
-| **Architecture** | RISC-V (rv64) |
-| **Platform** | QEMU |
-| **License** | MIT |
+| 类别 | 技术栈 |
+|------|--------|
+| **语言** | ANSI C |
+| **架构** | RISC-V (rv64) |
+| **平台** | QEMU |
+| **许可证** | MIT |
 
-## 📋 Overview
+## 📋 简介
 
-xv6 is a modern re-implementation of **Unix V6** for **RISC-V multiprocessors**, written in ANSI C. Originally from MIT's 6.1810, this version was completed at **Wuhan University** (2024 Spring). It provides a complete, minimal OS kernel with process management, virtual memory, file systems, device drivers, and full user-space utilities.
+xv6 是 Unix V6 的 RISC-V 重实现，源自 MIT 6.1810。完整操作系统内核：进程管理、虚拟内存、文件系统、设备驱动、用户态工具，代码量 < 10K LoC。
 
-> **Why xv6?** xv6 is the cleanest pedagogical kernel in existence — small enough to read in a semester (< 10K LoC) but complete enough to run real Unix programs. Building it from the ground up teaches every core OS abstraction: syscalls, scheduling, virtual memory, file systems, and drivers.
-
-## 🚀 Quick Start
-
-### Prerequisites
+## 🚀 快速开始
 
 ```bash
-# Install RISC-V cross-compiler
+# 安装 RISC-V 交叉编译器
 sudo apt-get install gcc-riscv64-linux-gnu
-```
 
-### Build & Run
-
-```bash
-# Build the kernel and file system
+# 编译并运行
 make
-
-# Run in QEMU (single-core)
-make qemu
-
-# Run with 2 cores
-make qemu CPUS=2
+make qemu           # 单核
+make qemu CPUS=2    # 双核
 ```
 
-### Inside xv6
+## ✨ 功能特性
 
-```
-$ ls
-.              1 1 1024
-..             1 1 1024
-README         2 2 2270
-cat            2 3 24968
-$ cat README
-xv6 is a re-implementation of Dennis Ritchie's and Ken Thompson's Unix
-Version 6 (v6).
-```
+- **进程管理**：fork/exec/wait/kill，时间片轮转调度，sleep/wakeup
+- **虚拟内存**：Sv39 页表，写时复制，按需调页
+- **文件系统**：日志型（journaling），崩溃恢复，缓存，inode
+- **设备驱动**：UART 串口、Virtio 磁盘、PLIC 中断控制器
+- **系统调用**：完整 Unix 接口（30+ 个）
+- **用户程序**：Shell、ls、cat、grep、wc 等
 
-## ✨ Key Features
-
-- **Process Management**: Fork/exec/wait/kill, round-robin scheduling, sleep/wakeup
-- **Virtual Memory**: Sv39 page tables, COW, demand paging
-- **File System**: Journaling (logging), crash recovery, buffer cache, inodes
-- **Drivers**: UART console, Virtio disk, PLIC interrupt controller
-- **System Calls**: Complete Unix syscall interface (30+ syscalls)
-- **User Programs**: Shell, ls, cat, grep, wc, echo, mkdir, rm, and more
-
-## 🏗️ Architecture
+## 🏗️ 项目结构
 
 ```
 xv6-riscv/
-├── kernel/                     # Kernel source
-│   ├── main.c                  # Boot sequence & initialization
-│   ├── proc.c / proc.h         # Process management & scheduling
-│   ├── vm.c                    # Virtual memory (page tables)
-│   ├── trap.c                  # Trap/interrupt handling
-│   ├── syscall.c / syscall.h   # Syscall dispatch table
-│   ├── sysfile.c / sysproc.c   # Syscall implementations
-│   ├── fs.c / fs.h             # File system implementation
-│   ├── bio.c / log.c           # Buffer cache & journaling
-│   ├── kalloc.c                # Physical page allocator
-│   ├── uart.c / console.c      # UART console driver
-│   ├── virtio_disk.c           # Virtio block device driver
-│   ├── plic.c                  # PLIC interrupt controller
-│   ├── spinlock.c / sleeplock.c # Synchronization primitives
-│   ├── entry.S / start.c       # Boot entry point
-│   └── kernel.ld               # Linker script
-├── user/                       # User-space programs
-│   ├── sh.c                    # Shell (command interpreter)
-│   ├── cat.c, echo.c, ls.c, grep.c, wc.c  # Standard utilities
-│   ├── usertests.c             # User-mode test suite
-│   ├── init.c / initcode.S     # Init process
-│   └── ulib.c / umalloc.c      # User-mode C library
-├── mkfs/                       # File system image builder
-└── Makefile                    # Build system
+├── kernel/                     # 内核源码
+│   ├── main.c                 # 启动初始化
+│   ├── proc.c                 # 进程管理与调度
+│   ├── vm.c                   # 虚拟内存
+│   ├── trap.c                 # 中断/异常处理
+│   ├── syscall.c              # 系统调用分发
+│   ├── fs.c                   # 文件系统
+│   ├── bio.c / log.c          # 缓存与日志
+│   ├── kalloc.c               # 物理页分配
+│   ├── uart.c                 # UART 驱动
+│   ├── virtio_disk.c          # Virtio 磁盘驱动
+│   ├── plic.c                 # 中断控制器
+│   └── spinlock.c             # 同步原语
+├── user/                       # 用户程序
+│   ├── sh.c                   # Shell
+│   ├── cat.c, ls.c, grep.c    # 标准工具
+│   └── usertests.c            # 用户态测试
+├── mkfs/                       # 文件系统镜像工具
+└── Makefile
 ```
 
-## ❓ FAQ
+## ❓ 常见问题
 
-| Question | Answer |
-|----------|--------|
-| **How do I debug the kernel?** | Use QEMU's `-gdb tcp::26000` flag and connect with GDB (riscv64-linux-gnu-gdb). |
-| **How to add a new syscall?** | (1) Add syscall number in `kernel/syscall.h` (2) Implement in `kernel/sysproc.c` (3) Add stub in `user/user.h` (4) Update `syscall.c` dispatch table. |
-| **Can I run xv6 on real hardware?** | The port targets QEMU, but the kernel can be adapted for physical SiFive or Kendryte RISC-V boards with driver changes. |
+| 问题 | 回答 |
+|------|------|
+| **如何调试内核？** | QEMU 加 `-gdb tcp::26000`，用 riscv64-linux-gnu-gdb 连接 |
+| **如何添加系统调用？** | 3 步：加编号 → 实现 → 添加用户态存根 |
+| **能在真机上跑吗？** | QEMU 专用，适配 SiFive/Kendryte 板需修改驱动 |
 
-## 🔗 See Also
+## 🔗 相关项目
 
-- [Pipeline CPU](/WJH-makers/project4) — Hardware-level understanding of the processor xv6 runs on
-- [File Management Tool](/WJH-makers/FileManagementTool) — User-space file system concepts applied
+- [Pipeline CPU](/WJH-makers/project4) — 硬件层面的流水线处理器
+- [File Management](/WJH-makers/FileManagementTool) — 用户态文件系统概念应用
 
-## 🎓 Academic Context
+## 🎓 课程背景
 
-This project was completed as part of the **Operating Systems** course (2024 Spring) at **Wuhan University**, School of Computer Science.
+武汉大学计算机学院 · 操作系统课程（2024 春）。
 
-### References
+### 参考
 
 - [MIT 6.1810: Operating System Engineering](https://pdos.csail.mit.edu/6.828/)
 - [xv6 Book (RISC-V)](https://pdos.csail.mit.edu/6.828/2022/xv6/book-riscv-rev3.pdf)
-- [RISC-V Specification](https://riscv.org/technical/specifications/)
 
 ---
 
