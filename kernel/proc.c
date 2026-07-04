@@ -268,6 +268,8 @@ growproc(int n)
       return -1;
     }
   } else if(n < 0){
+    if(-n > sz)
+      n = -sz;
     sz = uvmdealloc(p->pagetable, sz, sz + n);
   }
   p->sz = sz;
@@ -519,11 +521,10 @@ forkret(void)
   // Still holding p->lock from scheduler.
   release(&myproc()->lock);
 
-  if (first) {
+  if (__sync_bool_compare_and_swap(&first, 1, 0)) {
     // File system initialization must be run in the context of a
     // regular process (e.g., because it calls sleep), and thus cannot
     // be run from main().
-    first = 0;
     fsinit(ROOTDEV);
   }
 

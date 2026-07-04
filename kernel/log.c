@@ -230,6 +230,9 @@ log_write(struct buf *b)
   if (i == log.lh.n) {  // Add new block to log?
     bpin(b);
     log.lh.n++;
+  } else {
+    if(b->refcnt < 1)
+      panic("log_write: absorbed block not pinned");
   }
   release(&log.lock);
 }

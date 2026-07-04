@@ -142,6 +142,11 @@ sys_link(void)
     return -1;
   }
 
+  if(ip->nlink == 32767){
+    iunlockput(ip);
+    end_op();
+    return -1;
+  }
   ip->nlink++;
   iupdate(ip);
   iunlock(ip);
