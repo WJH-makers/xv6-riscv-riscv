@@ -11,15 +11,50 @@
 
 ## 📋 Overview
 
-**xv6** is a modern re-implementation of the **Unix V6 operating system** for **RISC-V multiprocessors**, written in ANSI C. Originally developed by MIT for the 6.1810 course, this version is the course project at **Wuhan University** (2024 Spring).
+xv6 is a modern re-implementation of **Unix V6** for **RISC-V multiprocessors**, written in ANSI C. Originally from MIT's 6.1810, this version was completed at **Wuhan University** (2024 Spring). It provides a complete, minimal OS kernel with process management, virtual memory, file systems, device drivers, and full user-space utilities.
 
-It provides a complete, minimal OS kernel with process management, virtual memory, file systems, device drivers, and a full set of user-space utilities.
+> **Why xv6?** xv6 is the cleanest pedagogical kernel in existence — small enough to read in a semester (< 10K LoC) but complete enough to run real Unix programs. Building it from the ground up teaches every core OS abstraction: syscalls, scheduling, virtual memory, file systems, and drivers.
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+```bash
+# Install RISC-V cross-compiler
+sudo apt-get install gcc-riscv64-linux-gnu
+```
+
+### Build & Run
+
+```bash
+# Build the kernel and file system
+make
+
+# Run in QEMU (single-core)
+make qemu
+
+# Run with 2 cores
+make qemu CPUS=2
+```
+
+### Inside xv6
+
+```
+$ ls
+.              1 1 1024
+..             1 1 1024
+README         2 2 2270
+cat            2 3 24968
+$ cat README
+xv6 is a re-implementation of Dennis Ritchie's and Ken Thompson's Unix
+Version 6 (v6).
+```
 
 ## ✨ Key Features
 
-- **Process Management**: Fork/exec/wait/kill, scheduling (round-robin), sleep/wakeup
-- **Virtual Memory**: Page tables (Sv39 RISC-V), COW, demand paging
-- **File System**: Logging (journaling), crash recovery, buffer cache, inodes
+- **Process Management**: Fork/exec/wait/kill, round-robin scheduling, sleep/wakeup
+- **Virtual Memory**: Sv39 page tables, COW, demand paging
+- **File System**: Journaling (logging), crash recovery, buffer cache, inodes
 - **Drivers**: UART console, Virtio disk, PLIC interrupt controller
 - **System Calls**: Complete Unix syscall interface (30+ syscalls)
 - **User Programs**: Shell, ls, cat, grep, wc, echo, mkdir, rm, and more
@@ -52,46 +87,6 @@ xv6-riscv/
 │   └── ulib.c / umalloc.c      # User-mode C library
 ├── mkfs/                       # File system image builder
 └── Makefile                    # Build system
-```
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-```bash
-# Install RISC-V cross-compiler
-sudo apt-get install gcc-riscv64-linux-gnu
-
-# Or use the provided toolchain
-```
-
-### Build & Run
-
-```bash
-# Build the kernel and file system
-make
-
-# Run in QEMU
-make qemu
-
-# Run with CPUS=2 (multi-core)
-make qemu CPUS=2
-```
-
-### Inside xv6
-
-```
-$ ls
-.              1 1 1024
-..             1 1 1024
-README         2 2 2270
-cat            2 3 24968
-echo           2 4 23592
-...
-$ cat README
-xv6 is a re-implementation of Dennis Ritchie's and Ken Thompson's Unix
-Version 6 (v6).  xv6 is inspired by John Lions's Commentary on UNIX 6th Edition.
-...
 ```
 
 ## 🎓 Academic Context
