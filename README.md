@@ -2,12 +2,12 @@
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:2d3436,100:636e72&height=180&section=header&text=xv6-riscv&fontSize=60&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Unix%20V6%20Re-implementation%20for%20RISC-V%20Multiprocessors&descAlignY=55&descAlign=50" width="100%" />
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Language-ANSI%20C-555555?style=flat-square&logo=c" />
-  <img src="https://img.shields.io/badge/Architecture-RISC--V%20(rv64)-00A1E9?style=flat-square" />
-  <img src="https://img.shields.io/badge/Platform-QEMU-FF6600?style=flat-square" />
-  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" />
-</p>
+| Category | Stack |
+|----------|-------|
+| **Language** | ANSI C |
+| **Architecture** | RISC-V (rv64) |
+| **Platform** | QEMU |
+| **License** | MIT |
 
 ## 📋 Overview
 
@@ -88,6 +88,19 @@ xv6-riscv/
 ├── mkfs/                       # File system image builder
 └── Makefile                    # Build system
 ```
+
+## ❓ FAQ
+
+| Question | Answer |
+|----------|--------|
+| **How do I debug the kernel?** | Use QEMU's `-gdb tcp::26000` flag and connect with GDB (riscv64-linux-gnu-gdb). |
+| **How to add a new syscall?** | (1) Add syscall number in `kernel/syscall.h` (2) Implement in `kernel/sysproc.c` (3) Add stub in `user/user.h` (4) Update `syscall.c` dispatch table. |
+| **Can I run xv6 on real hardware?** | The port targets QEMU, but the kernel can be adapted for physical SiFive or Kendryte RISC-V boards with driver changes. |
+
+## 🔗 See Also
+
+- [Pipeline CPU](/WJH-makers/project4) — Hardware-level understanding of the processor xv6 runs on
+- [File Management Tool](/WJH-makers/FileManagementTool) — User-space file system concepts applied
 
 ## 🎓 Academic Context
 
