@@ -51,11 +51,17 @@ kfree(void *pa)
   if(((uint64)pa % PGSIZE) != 0 || (char*)pa < end || (uint64)pa >= PHYSTOP)
     panic("kfree");
 
-  // Fill with junk to catch dangling refs.
-  memset(pa, 1, PGSIZE);
+  // Check for double free at offset 8, which retains the poison
+  // pattern (0xfe) after r->next at offset 0 is overwritten by
+  // the freelist pointer on the first free.
+  uint64 *magic = (uint64*)((char*)pa + 8);
+  if(*magic == 0xfefefefefefefefeULL)
+    panic("kfree: double free");
+
+  // Fill with poison to catch dangling refs.
+  memset(pa, 0xfe, PGSIZE);
 
   r = (struct run*)pa;
-
   acquire(&kmem.lock);
   r->next = kmem.freelist;
   kmem.freelist = r;

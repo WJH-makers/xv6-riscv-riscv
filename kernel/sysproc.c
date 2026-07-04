@@ -63,6 +63,10 @@ sys_sleep(void)
       return -1;
     }
     sleep(&ticks, &tickslock);
+    if(killed(myproc())){
+      release(&tickslock);
+      return -1;
+    }
   }
   release(&tickslock);
   return 0;

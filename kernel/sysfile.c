@@ -448,6 +448,7 @@ sys_exec(void)
     return -1;
   }
   memset(argv, 0, sizeof(argv));
+  uint64 total_alloc = 0;
   for(i=0;; i++){
     if(i >= NELEM(argv)){
       goto bad;
@@ -459,6 +460,9 @@ sys_exec(void)
       argv[i] = 0;
       break;
     }
+    if(total_alloc + PGSIZE > 32 * PGSIZE)
+      goto bad;
+    total_alloc += PGSIZE;
     argv[i] = kalloc();
     if(argv[i] == 0)
       goto bad;

@@ -345,6 +345,9 @@ iput(struct inode *ip)
     // so this acquiresleep() won't block (or deadlock).
     acquiresleep(&ip->lock);
 
+    // Set ref to 0 BEFORE releasing itable.lock, so that iget()
+    // won't find this inode and race with truncation.
+    ip->ref = 0;
     release(&itable.lock);
 
     itrunc(ip);
@@ -353,8 +356,7 @@ iput(struct inode *ip)
     ip->valid = 0;
 
     releasesleep(&ip->lock);
-
-    acquire(&itable.lock);
+    return;
   }
 
   ip->ref--;
